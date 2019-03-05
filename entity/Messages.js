@@ -1,5 +1,5 @@
 
-class Messages {
+export class Messages {
 
     setId (id){
         this.id = id;

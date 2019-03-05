@@ -1,5 +1,5 @@
 
-class Contacts{
+export class Contacts{
     setId (id){ 
         this.id = id;
     }
