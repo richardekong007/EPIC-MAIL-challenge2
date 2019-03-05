@@ -1,0 +1,24 @@
+{
+  "name": "epic-mail",
+  "version": "1.0.0",
+  "description": "Api endpoints for EPIC-mail app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richardekong007/EPIC-MAIL-challenge2.git"
+  },
+  "author": "Richard Ekong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/richardekong007/EPIC-MAIL-challenge2/issues"
+  },
+  "homepage": "https://github.com/richardekong007/EPIC-MAIL-challenge2#readme",
+  "devDependencies": {
+    "eslint": "^5.15.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0"
+  }
+}
