@@ -1,5 +1,6 @@
 
 export class User{
+
     setId (id){
         this.id = id;
     }
@@ -23,7 +24,7 @@ export class User{
         return this.firstName;
     }
 
-    setLastName (){
+    setLastName (lastName){
         this.lastName = lastName;
     }
 
