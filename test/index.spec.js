@@ -1,32 +1,33 @@
-
-import {server} from '../index';
-import {User} from '../entity/User';
+import server from '../src/index';
+import {User} from '../src/entity/User';
 
 
 const request = require('supertest');
-const expect = require('chai').expect;
+const chai = require('chai');
+const expect = chai.expect;
 let user;
 
-beforeEach(() =>{
-    user = new User();
-    user.setId(1);
-    user.setFirstName('John');
-    user.setLastName('Tony');
-    user.setEmail('john-tony@gmail.com');
-    user.setPassword('1234');
+beforeEach(() => {
+    user = new User(
+        1,
+        'john',
+        'Tony',
+        'johntony@gmail.com',
+        '1234'
+    );
 });
 
-describe('/Post user', () =>{
-    it('should sign and authenticate user', (done)=>{
+describe('/Post user', () => {
+    it('should sign and authenticate user', (done) => {
         request(server)
             .post('/auth/signup')
-            .auth(user.getEmail(), user.getPassword())
+            // .auth(user.getEmail(), user.getPassword())
             .send(user)
-            .set('Accept','application/json')
-            .expect('Content-Type','/json/')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
             .end((error, res) => {
-                if(error) return done(error);
-                if(res){
+                if (error) return done(error);
+                if (res.body) {
                     expect(res.body).to.be.an('object');
                     expect(res.body).to.have.property('status');
                     expect(res.body).to.have.property('data');
@@ -34,21 +35,21 @@ describe('/Post user', () =>{
                     expect(res.status).to.equal(201);
                 }
             });
-            
+
     });
 });
 
-describe('/Post user', ()=>{
-    it('should log in and authenticate user', (done) =>{
-        request(sever)
+describe('/Post user', () => {
+    it('should log in and authenticate user', (done) => {
+        request(server)
             .post('/auth/login')
-            .auth(user.getEmail(), user.getPassword())
+            // .auth(user.getEmail(), user.getPassword())
             .send(user)
-            .set('Accept','application/json')
-            .expect('Content-Type','/json/')
-            .end((error,res)=> {
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json')
+            .end((error, res) => {
                 if (error) return done(error);
-                if (res){
+                if (res) {
                     expect(res.body).to.be.an('object');
                     expect(res.body).to.have.property('status');
                     expect(res.body).to.have.property('data');
@@ -57,6 +58,6 @@ describe('/Post user', ()=>{
                 }
                 done();
             });
-});
+    });
 
 });
