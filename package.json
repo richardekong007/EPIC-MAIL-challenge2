@@ -4,8 +4,8 @@
   "description": "Api endpoints for EPIC-mail app",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "mocha"
+    "start": "nodemon --exec babel-node index.js",
+    "test": "mocha --require @babel/register"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.3.4",
     "@babel/register": "^7.0.0",
+    "@types/supertest": "^2.0.7",
     "chai": "^4.2.0",
     "eslint": "^5.15.1",
     "eslint-config-airbnb-base": "^13.1.0",
