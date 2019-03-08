@@ -1,4 +1,3 @@
-
 import server from '../src/index';
 import {User} from '../src/entity/User';
 import {Messages} from '../src/entity/Messages'
@@ -49,14 +48,14 @@ describe('Post/ auth/signup', () => {
                 res.body.should.be.a('object');
                 res.body.should.have.property('status');
                 res.body.should.have.property('data');
-                res.body.data.should.be.a('object');
+                res.body.data.should.be.a('array');
                 done();
             });
     });
 });
 
 describe('Post/ auth/login', () => {
-    it('should login  auser ', (done) => {
+    it('should login  a user ', (done) => {
         expect(user).to.not.be.null;
         expect(user).to.not.be.undefined;
         expect(user.getEmail()).to.not.be.undefined;
@@ -94,10 +93,12 @@ describe('Post/messages', () => {
                 res.should.not.be.null;
                 res.should.not.be.undefined;
                 res.body.should.be.not.be.empty;
-                res.body.should.have.property('status').of('number');
+                res.body.should.have.property('status');
+                res.body.should.have.property('message');
+                res.body.message.should.be.a('string');
+                res.body.status.should.be.a('number');
                 res.body.should.have.property('data');
                 res.body.data.should.be.a('array');
-                res.body.data.should.not.be.empty;
                 done();
             });
     });
