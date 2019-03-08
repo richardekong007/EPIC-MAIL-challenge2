@@ -36,6 +36,10 @@ export class User{
         this.lastName = lastName;
     }
 
+    getLastName (){
+        return this.lastName;
+    }
+
     setPassword (password){
         this.password = password;
     }
