@@ -7,7 +7,6 @@ import {UserStore} from "../storage/UserStore";
 import {MessageStore} from "../storage/MessageStore";
 
 
-
 const userDataStore = UserStore.getInstance();
 const messageStore = MessageStore.getInstance();
 
@@ -28,7 +27,7 @@ export function signup(req, res) {
         } else {
             //create a user from the request
             const user = createUser(req, hash);
-            if ((userDataStore.exists(user.id, user))) {
+            if ((userDataStore.has(user.id, user))) {
                 let status = 409;
                 return res.status(status)
                     .send({
@@ -80,7 +79,7 @@ export function login(req, res) {
     });
 }
 
-export function sendMessage(req, res) {
+export function createEmail(req, res) {
     let status;
     //valid req body
     if (!req.body) {
@@ -88,13 +87,30 @@ export function sendMessage(req, res) {
         return res.status(status).send({status: status, data: [], message: 'Internal server error'});
     }
     let message = createMessage(req, 'sent');
-    if (messageStore.exists(message.getId(), message)) {
-        sendResponse(res, 409, messageStore,
+    if (messageStore.has(message.getId(), message)) {
+        sendResponse(res, 409, messageStore.readAll(),
             `Message with ${message.getId()} already exists`);
     } else {
         messageStore.save(message.getId(), message);
         sendResponse(res, 201, messageStore.readAll(), 'Message delivered!');
     }
+
+}
+
+
+export function getEmail(req, res) {
+
+    let status = 500;
+    let email = messageStore.read(res.params.id);
+    if (!email) {
+        status = 401;
+        sendResponse(res, status, [], 'Email not found!');
+    } else {
+        status = 200;
+        sendResponse(res, status, [email], null);
+    }
+
+    sendResponse(res, status, [], 'Internal server error');
 
 }
 
