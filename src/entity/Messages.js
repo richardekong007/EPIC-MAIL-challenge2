@@ -25,6 +25,14 @@ export class Messages {
         return this.subject;
     }
 
+    setMessage( message){
+        this.message = message;
+    }
+
+    getMessage(){
+        return this.message;
+    }
+
     setParentMessageId (parentMessageId){
         this.parentMessageId = parentMessageId;
     }
