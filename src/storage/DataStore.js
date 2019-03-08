@@ -42,10 +42,20 @@ export default class DataSore {
         return data;
     }
 
+    readAll() {
+        let data = [];
+        if (this.store.length > 0) {
+            this.store.forEach(record => {
+                    data.push(record.data);
+            });
+        }
+        return data;
+    }
+
     findByField(field, value) {
         //determine if the field exist in the store
         let found = false;
-        if (this.store.length > 0){
+        if (this.store.length > 0) {
 
             let keys = Object.keys(this.store[0]);
             keys.forEach((key) => {
