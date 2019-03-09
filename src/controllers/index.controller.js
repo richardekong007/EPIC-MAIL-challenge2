@@ -106,7 +106,7 @@ export function getEmail(req, res) {
         status = 404;
         return sendResponse(res, status, [], 'Email not found!');
     }
-    if(email) {
+    if (email) {
         status = 200;
         return sendResponse(res, status, [email], '');
     }
@@ -115,17 +115,39 @@ export function getEmail(req, res) {
 
 }
 
-export function getEmails(req,res){
+export function getEmails(req, res) {
 
     let messages = messageStore.readAll();
-    if (messages.length > 0){
-        return sendResponse(res,200, messages,'');
+    if (messages.length > 0) {
+        return sendResponse(res, 200, messages, '');
     }
-    if (messages.length < 1){
+    if (messages.length < 1) {
         return sendResponse(res, 204, [], 'No content');
     }
     return sendResponse(res, 500, [], 'Internal server error');
 }
+
+export function deleteEmail(req, res) {
+    let status = 500;
+    let deletedEmail;
+    deletedEmail = messageStore.deleteItem(parseInt(req.params.id));
+    if (deletedEmail) {
+        status = 200;
+        return res.status(status).send({
+            'status': status,
+            "data": [{
+                'message': 'Email deleted'
+            }]
+        });
+    } else if (!deletedEmail) {
+        status = 404;
+        return sendResponse(res, status, [], 'Not found');
+    } else {
+        return sendResponse(res, status, [], 'Internal Server Error');
+    }
+
+}
+
 
 function createUser(req, hash) {
     return new User(
