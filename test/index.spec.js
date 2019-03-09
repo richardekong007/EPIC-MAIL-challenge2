@@ -133,7 +133,7 @@ describe('Get/ Messages', () => {
         it('should fetch all unread received emails', (done) => {
             messages.setStatus('unread');
             dataStore.save(messages.getId(), messages);
-            if (dataStore.exists(messages.getId(), messages)) {
+            if (dataStore.has(messages.getId(), messages)) {
                 chai.request(server)
                     .get('/messages/' + messages.getId())
                     .send(messages)
@@ -153,7 +153,7 @@ describe('Get/ Messages', () => {
         it('should fetch all sent messages', (done) => {
             messages.setStatus('send');
             dataStore.save(messages.getId(), messages);
-            if (dataStore.exists(messages.getId(), messages)) {
+            if (dataStore.has(messages.getId(), messages)) {
                 chai.request(server)
                     .get('/messages/' + messages.getId())
                     .send(messages)
@@ -173,14 +173,13 @@ describe('Get/ Messages', () => {
 describe('GET/ messages/ message-id', () => {
     it('should get a specific email record', (done) => {
         dataStore.save(messages.getId(), messages);
-        if (dataStore.exists(messages.getId(), messages)) {
+        if (dataStore.has(messages.getId(), messages)) {
             chai.request(server)
                 .get('/messages/' + messages.getId())
                 .send(messages)
                 .end((error, res) => {
                     res.body.should.have.property('status').of('number');
                     res.body.should.have.property('data').of('object');
-                    res.body.data.should.not.be.null;
                     res.body.data.should.have.property('id').of('number');
                     res.body.data.should.have.property('createdOn').of('object');
                     res.body.data.should.have.property('subject').of('string');

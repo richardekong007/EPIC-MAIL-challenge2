@@ -23,7 +23,7 @@ function () {
   }
 
   _createClass(DataSore, [{
-    key: "exists",
+    key: "has",
     value: function exists(id, newRecord) {
       var exists = false;
       var oldRecord = this.read(id);
@@ -47,7 +47,7 @@ function () {
   }, {
     key: "save",
     value: function save(id, object) {
-      if (!this.exists(id, object)) {
+      if (!this.has(id, object)) {
         this.store.push({
           'data': object
         });

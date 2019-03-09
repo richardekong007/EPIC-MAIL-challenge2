@@ -43,7 +43,7 @@ function signup(req, res) {
       //create a user from the request
       var user = createUser(req, hash);
 
-      if (userDataStore.exists(user.id, user)) {
+      if (userDataStore.has(user.id, user)) {
         var status = 409;
         return res.status(status).send({
           'status': status,
@@ -126,8 +126,8 @@ function sendMessage(req, res) {
 
   var message = createMessage(req, 'sent');
 
-  if (messageStore.exists(message.getId(), message)) {
-    sendResponse(res, 409, messageStore, "Message with ".concat(message.getId(), " already exists"));
+  if (messageStore.has(message.getId(), message)) {
+    sendResponse(res, 409, messageStore, "Message with ".concat(message.getId(), " already has"));
   } else {
     messageStore.save(message.getId(), message);
     sendResponse(res, 201, messageStore.readAll(), 'Message delivered!');

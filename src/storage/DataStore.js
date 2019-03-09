@@ -6,7 +6,7 @@ export default class DataSore {
         this.store = [];
     }
 
-    exists(id, newRecord) {
+    has(id, newRecord) {
         let exists = false;
         const oldRecord = this.read(id);
         if (oldRecord) {
@@ -20,12 +20,11 @@ export default class DataSore {
                 });
             }
         }
-        console.log(exists);
         return exists;
     }
 
     save(id, object) {
-        if (!this.exists(id, object)) {
+        if (!this.has(id, object)) {
             this.store.push({
                 'data': object
             });

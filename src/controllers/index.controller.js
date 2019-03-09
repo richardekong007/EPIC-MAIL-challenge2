@@ -7,7 +7,6 @@ import {UserStore} from "../storage/UserStore";
 import {MessageStore} from "../storage/MessageStore";
 
 
-
 const userDataStore = UserStore.getInstance();
 const messageStore = MessageStore.getInstance();
 
@@ -28,7 +27,7 @@ export function signup(req, res) {
         } else {
             //create a user from the request
             const user = createUser(req, hash);
-            if ((userDataStore.exists(user.id, user))) {
+            if ((userDataStore.has(user.id, user))) {
                 let status = 409;
                 return res.status(status)
                     .send({
@@ -58,7 +57,7 @@ export function login(req, res) {
         status = 500;
         return res.status(status).send({status: status, data: [], message: 'Internal server error'});
     }
-    let user = userDataStore.read(req.body.id, req.body);
+    let user = userDataStore.read(req.body.id);
     if (!user) {
         status = 404;
         return res.status(status).send({status: status, data: [], message: 'Resource not found'});
@@ -80,7 +79,7 @@ export function login(req, res) {
     });
 }
 
-export function sendMessage(req, res) {
+export function createEmail(req, res) {
     let status;
     //valid req body
     if (!req.body) {
@@ -88,14 +87,44 @@ export function sendMessage(req, res) {
         return res.status(status).send({status: status, data: [], message: 'Internal server error'});
     }
     let message = createMessage(req, 'sent');
-    if (messageStore.exists(message.getId(), message)) {
-        sendResponse(res, 409, messageStore,
+    if (messageStore.has(message.getId(), message)) {
+        sendResponse(res, 409, messageStore.readAll(),
             `Message with ${message.getId()} already exists`);
     } else {
         messageStore.save(message.getId(), message);
         sendResponse(res, 201, messageStore.readAll(), 'Message delivered!');
     }
 
+}
+
+
+export function getEmail(req, res) {
+
+    let status = 500;
+    let email = messageStore.read(parseInt(req.params.id));
+    if (!email) {
+        status = 404;
+        return sendResponse(res, status, [], 'Email not found!');
+    }
+    if(email) {
+        status = 200;
+        return sendResponse(res, status, [email], '');
+    }
+
+    return sendResponse(res, status, [], 'Internal server error');
+
+}
+
+export function getEmails(req,res){
+
+    let messages = messageStore.readAll();
+    if (messages.length > 0){
+        return sendResponse(res,200, messages,'');
+    }
+    if (messages.length < 1){
+        return sendResponse(res, 204, [], 'No content');
+    }
+    return sendResponse(res, 500, [], 'Internal server error');
 }
 
 function createUser(req, hash) {
@@ -109,13 +138,16 @@ function createUser(req, hash) {
 }
 
 function createMessage(req, msgStatus) {
+
+    req.body.createdOn = new Date();
+    req.body.status = msgStatus;
     let message = new Messages();
     message.setId(req.body.id);
-    message.setCreatedOn(new Date());
+    message.setCreatedOn(req.body.createdOn);
     message.setSubject(req.body.subject);
     message.setMessage(req.body.message);
     message.setParentMessageId(req.body.parentMessageId);
-    message.setStatus(msgStatus);
+    message.setStatus(req.body.status);
     return message
 }
 
