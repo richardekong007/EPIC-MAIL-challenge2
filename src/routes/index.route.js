@@ -15,7 +15,9 @@ app.post('/auth/login', controller.login);
 
 app.post('/messages', authorize,controller.createEmail);
 
-app.post('/messages/:id', authorize, controller.getEmail);
+app.get('/messages/:id', authorize, controller.getEmail);
+
+app.get('/messages', authorize,controller.getEmails);
 
 export default app;
 

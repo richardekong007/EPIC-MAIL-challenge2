@@ -57,7 +57,7 @@ export function login(req, res) {
         status = 500;
         return res.status(status).send({status: status, data: [], message: 'Internal server error'});
     }
-    let user = userDataStore.read(req.body.id, req.body);
+    let user = userDataStore.read(req.body.id);
     if (!user) {
         status = 404;
         return res.status(status).send({status: status, data: [], message: 'Resource not found'});
@@ -101,17 +101,30 @@ export function createEmail(req, res) {
 export function getEmail(req, res) {
 
     let status = 500;
-    let email = messageStore.read(res.params.id);
+    let email = messageStore.read(parseInt(req.params.id));
     if (!email) {
-        status = 401;
-        sendResponse(res, status, [], 'Email not found!');
-    } else {
+        status = 404;
+        return sendResponse(res, status, [], 'Email not found!');
+    }
+    if(email) {
         status = 200;
-        sendResponse(res, status, [email], null);
+        return sendResponse(res, status, [email], '');
     }
 
-    sendResponse(res, status, [], 'Internal server error');
+    return sendResponse(res, status, [], 'Internal server error');
 
+}
+
+export function getEmails(req,res){
+
+    let messages = messageStore.readAll();
+    if (messages.length > 0){
+        return sendResponse(res,200, messages,'');
+    }
+    if (messages.length < 1){
+        return sendResponse(res, 204, [], 'No content');
+    }
+    return sendResponse(res, 500, [], 'Internal server error');
 }
 
 function createUser(req, hash) {
@@ -125,13 +138,16 @@ function createUser(req, hash) {
 }
 
 function createMessage(req, msgStatus) {
+
+    req.body.createdOn = new Date();
+    req.body.status = msgStatus;
     let message = new Messages();
     message.setId(req.body.id);
-    message.setCreatedOn(new Date());
+    message.setCreatedOn(req.body.createdOn);
     message.setSubject(req.body.subject);
     message.setMessage(req.body.message);
     message.setParentMessageId(req.body.parentMessageId);
-    message.setStatus(msgStatus);
+    message.setStatus(req.body.status);
     return message
 }
 
