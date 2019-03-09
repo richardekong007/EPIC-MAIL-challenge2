@@ -21,10 +21,6 @@ beforeEach((done) => {
     done();
 });
 
-afterEach((done) => {
-    server.close();
-    done();
-});
 
 describe('Post/ auth/signup', () => {
     it('should create a user account', (done) => {
@@ -99,6 +95,24 @@ describe('Post/messages', () => {
                 res.body.status.should.be.a('number');
                 res.body.should.have.property('data');
                 res.body.data.should.be.a('array');
+                res.body.data.forEach((record) => {
+                    record.should.have.property('id');
+                    record.id.should.be.a('number');
+                    record.should.have.property('createdOn');
+                    record.createdOn.should.be.an('object');
+                    record.should.have.property('subject');
+                    record.subject.should.be.a('string');
+                    record.should.have.property('message');
+                    record.message.should.be.a('string');
+                    record.should.have.property('senderId');
+                    record.senderId.should.be.a('number');
+                    record.should.have.property('receiverId');
+                    record.receiverId.should.be.a('number');
+                    record.should.have.property('parentMessageId');
+                    record.parentMessageId.should.be.a('number');
+                    record.should.have.property('status');
+                    record.status.should.be.a('string');
+                });
                 done();
             });
     });
@@ -112,19 +126,10 @@ describe('Get/ Messages', () => {
             .get('/messages')
             .end((error, res) => {
                 res.body.should.be.a('object');
-                res.body.should.have.property('status').of('number');
+                res.body.should.have.property('status');
+                res.body.status.should.be.a('number');
                 res.body.should.have.property('data');
                 res.body.data.should.be.a('array');
-                res.body.data.forEach((record) => {
-                    expect(record).to.have.property('id').of('number');
-                    expect(record).to.have.property('createdOn').of('object');
-                    expect(record).to.have.property('subject').of('string');
-                    expect(record).to.have.property('message').of('string');
-                    expect(record).to.have.property('senderId').of('number');
-                    expect(record).to.have.property('receiverId').of('number');
-                    expect(record).to.have.property('parentMessageId').of('number');
-                    expect(record).to.have.property('status').of('string');
-                });
                 done();
             });
     });
@@ -178,16 +183,10 @@ describe('GET/ messages/ message-id', () => {
                 .get('/messages/' + messages.getId())
                 .send(messages)
                 .end((error, res) => {
-                    res.body.should.have.property('status').of('number');
-                    res.body.should.have.property('data').of('object');
-                    res.body.data.should.have.property('id').of('number');
-                    res.body.data.should.have.property('createdOn').of('object');
-                    res.body.data.should.have.property('subject').of('string');
-                    res.body.data.should.have.property('message').of('string');
-                    res.body.data.should.have.property('senderId').of('number');
-                    res.body.data.should.have.property('receiverId').of('number');
-                    res.body.data.should.have.property('parentMessageId').of('number');
-                    res.body.data.should.have.property('status').of('string');
+                    res.body.should.have.property('status');
+                    res.body.status.should.be.a('number');
+                    res.body.should.have.property('data');
+                    res.body.data.should.be.an('array');
                     done();
                 });
         }
@@ -199,14 +198,14 @@ describe('/Delete Message', () => {
         chai.request(server)
             .delete('/messages/' + messages.getId())
             .end((error, res) => {
-                res.body.should.have.property('status').of('number');
+                res.body.should.have.property('status');
+                res.body.status.should.be.a('number');
                 res.body.should.have.property('data');
-                expect(res.body.data).to.contain({"message": string});
+                res.body.data.should.be.an('array');
                 done();
             });
     });
 });
-
 
 function createMessages() {
     let messages = new Messages();
