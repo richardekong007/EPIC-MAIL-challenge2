@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --exec babel-node src/index.js",
     "build": "babel src --out-dir dist",
-    "test": "mocha --require @babel/register",
+    "test": "mocha --require @babel/register test/index.spec.js",
     "serve": "node dist/index.js"
   },
   "repository": {
