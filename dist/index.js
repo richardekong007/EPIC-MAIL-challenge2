@@ -11,7 +11,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var port = 1000;
 
-var server = _index.default.listen(port, function () {
+var server = _index.default.listen(process.env.PORT || port, function () {
   console.log("Listening on port - ".concat(port));
 });
 

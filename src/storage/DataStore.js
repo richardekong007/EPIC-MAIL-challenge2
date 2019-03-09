@@ -68,6 +68,18 @@ export default class DataSore {
         return found;
     }
 
+    deleteItem(id) {
+        let deleted = [];
+        if (this.store.length > 0) {
+            this.store.forEach((record, index) => {
+                if (id === record.data.id) {
+                    deleted = this.store.splice(index, 1);
+                }
+            });
+        }
+        return deleted;
+    }
+
     static getInstance() {
         if (!this.dataStore) {
             this.dataStore = new DataSore();

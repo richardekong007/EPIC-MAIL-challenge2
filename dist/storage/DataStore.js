@@ -24,7 +24,7 @@ function () {
 
   _createClass(DataSore, [{
     key: "has",
-    value: function exists(id, newRecord) {
+    value: function has(id, newRecord) {
       var exists = false;
       var oldRecord = this.read(id);
 
@@ -41,7 +41,6 @@ function () {
         }
       }
 
-      console.log(exists);
       return exists;
     }
   }, {

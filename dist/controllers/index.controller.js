@@ -5,13 +5,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.signup = signup;
 exports.login = login;
-exports.sendMessage = sendMessage;
+exports.createEmail = createEmail;
+exports.getEmail = getEmail;
 
 var _User = require("../entity/User");
 
 var _Messages = require("../entity/Messages");
 
 var _bcrypt = _interopRequireDefault(require("bcrypt"));
+
+var _config = _interopRequireDefault(require("../config/config"));
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
@@ -57,7 +60,7 @@ function signup(req, res) {
         return res.status(_status).send({
           'status': _status,
           'message': 'user created successfully',
-          'data': userDataStore
+          'data': userDataStore.readAll()
         });
       }
     }
@@ -112,7 +115,7 @@ function login(req, res) {
   });
 }
 
-function sendMessage(req, res) {
+function createEmail(req, res) {
   var status; //valid req body
 
   if (!req.body) {
@@ -127,11 +130,26 @@ function sendMessage(req, res) {
   var message = createMessage(req, 'sent');
 
   if (messageStore.has(message.getId(), message)) {
-    sendResponse(res, 409, messageStore, "Message with ".concat(message.getId(), " already has"));
+    sendResponse(res, 409, messageStore.readAll(), "Message with ".concat(message.getId(), " already exists"));
   } else {
     messageStore.save(message.getId(), message);
     sendResponse(res, 201, messageStore.readAll(), 'Message delivered!');
   }
+}
+
+function getEmail(req, res) {
+  var status = 500;
+  var email = messageStore.read(res.params.id);
+
+  if (!email) {
+    status = 401;
+    sendResponse(res, status, [], 'Email not found!');
+  } else {
+    status = 200;
+    sendResponse(res, status, [email], null);
+  }
+
+  sendResponse(res, status, [], 'Internal server error');
 }
 
 function createUser(req, hash) {
@@ -161,7 +179,7 @@ function acquireToken(req) {
   return _jsonwebtoken.default.sign({
     id: req.body.id,
     email: req.body.email
-  }, '45erkjherht45495783', {
-    expiresIn: '1h'
+  }, _config.default.secret, {
+    expiresIn: _config.default.expiresIn
   });
 }
