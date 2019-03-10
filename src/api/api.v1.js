@@ -1,21 +1,21 @@
 import express from 'express';
 
 
-const appV1 = express();
+const appV1 = express.Router();
 const controller = require('../controllers/index.controller');
+const authorize = require('../middleware/auth');
 
+appV1.post('/auth/signup', controller.signup);
 
-appV1.post('/v1/auth/signup', controller.signup);
+appV1.post('/auth/login', controller.login);
 
-appV1.post('/v1/auth/login', controller.login);
+appV1.post('/messages', authorize, controller.createEmail);
 
-appV1.post('/v1/messages', controller.createEmail);
+appV1.get('/messages/:id',authorize, controller.getEmail);
 
-appV1.get('/v1/messages/:id', controller.getEmail);
+appV1.get('/messages', authorize, controller.getEmails);
 
-appV1.get('/v1/messages', controller.getEmails);
-
-appV1.delete('/v1/messages/:id', controller.deleteEmail);
+appV1.delete('/messages/:id', authorize, controller.deleteEmail);
 
 export default appV1;
 
