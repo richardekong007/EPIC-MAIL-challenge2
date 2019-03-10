@@ -99,7 +99,7 @@ describe('Post/messages', () => {
                     record.should.have.property('id');
                     record.id.should.be.a('number');
                     record.should.have.property('createdOn');
-                    record.createdOn.should.be.an('object');
+                    record.createdOn.should.be.an('string');
                     record.should.have.property('subject');
                     record.subject.should.be.a('string');
                     record.should.have.property('message');
