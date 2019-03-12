@@ -1,6 +1,5 @@
 import express from 'express';
 
-
 const appV1 = express.Router();
 const controller = require('../controllers/index.controller');
 const authorize = require('../middleware/auth');

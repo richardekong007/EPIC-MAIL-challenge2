@@ -7,6 +7,8 @@ exports.signup = signup;
 exports.login = login;
 exports.createEmail = createEmail;
 exports.getEmail = getEmail;
+exports.getEmails = getEmails;
+exports.deleteEmail = deleteEmail;
 
 var _User = require("../entity/User");
 
@@ -80,7 +82,7 @@ function login(req, res) {
     });
   }
 
-  var user = userDataStore.read(req.body.id, req.body);
+  var user = userDataStore.read(req.body.id);
 
   if (!user) {
     status = 404;
@@ -139,17 +141,54 @@ function createEmail(req, res) {
 
 function getEmail(req, res) {
   var status = 500;
-  var email = messageStore.read(res.params.id);
+  var email = messageStore.read(parseInt(req.params.id));
 
   if (!email) {
-    status = 401;
-    sendResponse(res, status, [], 'Email not found!');
-  } else {
-    status = 200;
-    sendResponse(res, status, [email], null);
+    status = 404;
+    return sendResponse(res, status, [], 'Email not found!');
   }
 
-  sendResponse(res, status, [], 'Internal server error');
+  if (email) {
+    status = 200;
+    return sendResponse(res, status, [email], '');
+  }
+
+  return sendResponse(res, status, [], 'Internal server error');
+}
+
+function getEmails(req, res) {
+  var messages = messageStore.readAll();
+
+  if (messages.length > 0) {
+    return sendResponse(res, 200, messages, '');
+  }
+
+  if (messages.length < 1) {
+    return sendResponse(res, 204, [], 'No content');
+  }
+
+  return sendResponse(res, 500, [], 'Internal server error');
+}
+
+function deleteEmail(req, res) {
+  var status = 500;
+  var deletedEmail;
+  deletedEmail = messageStore.deleteItem(parseInt(req.params.id));
+
+  if (deletedEmail) {
+    status = 200;
+    return res.status(status).send({
+      'status': status,
+      "data": [{
+        'message': 'Email deleted'
+      }]
+    });
+  } else if (!deletedEmail) {
+    status = 404;
+    return sendResponse(res, status, [], 'Not found');
+  } else {
+    return sendResponse(res, status, [], 'Internal Server Error');
+  }
 }
 
 function createUser(req, hash) {
@@ -157,13 +196,15 @@ function createUser(req, hash) {
 }
 
 function createMessage(req, msgStatus) {
+  req.body.createdOn = new Date();
+  req.body.status = msgStatus;
   var message = new _Messages.Messages();
   message.setId(req.body.id);
-  message.setCreatedOn(new Date());
+  message.setCreatedOn(req.body.createdOn);
   message.setSubject(req.body.subject);
   message.setMessage(req.body.message);
   message.setParentMessageId(req.body.parentMessageId);
-  message.setStatus(msgStatus);
+  message.setStatus(req.body.status);
   return message;
 }
 

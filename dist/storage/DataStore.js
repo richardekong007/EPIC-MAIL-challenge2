@@ -95,6 +95,23 @@ function () {
 
       return found;
     }
+  }, {
+    key: "deleteItem",
+    value: function deleteItem(id) {
+      var _this2 = this;
+
+      var deleted = [];
+
+      if (this.store.length > 0) {
+        this.store.forEach(function (record, index) {
+          if (id === record.data.id) {
+            deleted = _this2.store.splice(index, 1);
+          }
+        });
+      }
+
+      return deleted;
+    }
   }], [{
     key: "getInstance",
     value: function getInstance() {
