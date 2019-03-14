@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const secret = '45erkjherht45495783';
 
 
-module.exports = (req, res, next) => {
+const authorize = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(" ")[1];
         req.decodedToken = jwt.verify(token, secret);
@@ -13,4 +13,6 @@ module.exports = (req, res, next) => {
         return res.status(status).send({status: status, data :[], message: 'Authentication failed'});
     }
 };
+
+export {authorize};
 

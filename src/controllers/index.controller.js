@@ -17,6 +17,7 @@ const signup = (req, res) => {
             message: 'Internal server error, could not create user'
         });
     }
+
     //perform password encryption
     bcrypt.hash(req.body.password, 10, (error, hash) => {
         if (error) {
@@ -127,9 +128,10 @@ const getEmails = (req, res) => {
 };
 
 const getSentEmails = (req, res) => {
+
     let messages = messageStore.readAll();
-    const sentMessages = messages.filter(message =>
-        message.data.status === 'sent');
+    const sentMessages = messages.data.filter(message =>
+        message.status === 'sent');
     if (!sentMessages) {
         return sendResponse(res, 404, [], 'Messages not found');
     } else if (sentMessages.length < 1) {
@@ -143,9 +145,10 @@ const getSentEmails = (req, res) => {
 };
 
 const getUnreadEmails = (req, res) => {
+    let messages = messageStore.readAll();
 
-    let unreadMessages = messageStore
-        .filter(messages => messages.data.status === 'unread');
+    let unreadMessages = messages
+        .data.filter(messages => messages.status === 'unread');
     if (!unreadMessages) {
         return sendResponse(res, 404, [], 'messages not found');
     } else if (unreadMessages.length < 1) {
