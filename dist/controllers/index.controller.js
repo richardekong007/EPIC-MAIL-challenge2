@@ -32,6 +32,53 @@ var userDataStore = _UserStore.UserStore.getInstance();
 
 var messageStore = _MessageStore.MessageStore.getInstance();
 
+var mockedMessages = [{
+  "data": {
+    "id": 10,
+    "email": "ekong.richard@yahoo.com",
+    "subject": "BAD LIFE",
+    "message": "What a life",
+    "parentMessageId": 0,
+    "status": "sent"
+  }
+}, {
+  "data": {
+    "id": 20,
+    "email": "ekong.richard@yahoo.com",
+    "subject": "BAD LIFE",
+    "message": "What a life",
+    "parentMessageId": 0,
+    "status": "sent"
+  }
+}, {
+  "data": {
+    "id": 30,
+    "email": "ekong.richard@yahoo.com",
+    "subject": "BAD LIFE",
+    "message": "What a life",
+    "parentMessageId": 0,
+    "status": "sent"
+  }
+}, {
+  "data": {
+    "id": 40,
+    "email": "ekong.richard@yahoo.com",
+    "subject": "BAD LIFE",
+    "message": "What a life",
+    "parentMessageId": 0,
+    "status": "sent"
+  }
+}, {
+  "data": {
+    "id": 50,
+    "email": "ekong.richard@yahoo.com",
+    "subject": "BAD LIFE",
+    "message": "What a life",
+    "parentMessageId": 0,
+    "status": "unread"
+  }
+}];
+
 function signup(req, res) {
   // validate request
   if (!req.body) {
@@ -174,7 +221,7 @@ function getEmails(req, res) {
 
 function getSentEmails(req, res) {
   var messages = messageStore.readAll();
-  var sentMessages = messages.filter(function (message) {
+  var sentMessages = mockedMessages.filter(function (message) {
     return message.data.status === 'sent';
   });
 
@@ -190,7 +237,7 @@ function getSentEmails(req, res) {
 }
 
 function getUnreadEmails(req, res) {
-  var unreadMessages = messageStore.filter(function (messages) {
+  var unreadMessages = mockedMessages.filter(function (messages) {
     return messages.data.status === 'unread';
   });
 
