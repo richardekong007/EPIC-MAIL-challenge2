@@ -133,46 +133,41 @@ describe('Get/ Messages', () => {
                 done();
             });
     });
+});
 
-    describe('GET/ Messages ', () => {
-        it('should fetch all unread received emails', (done) => {
-            messages.setStatus('unread');
-            dataStore.save(messages.getId(), messages);
-            if (dataStore.has(messages.getId(), messages)) {
-                chai.request(server)
-                    .get('/messages/' + messages.getId())
-                    .send(messages)
-                    .end((error, res) => {
-                        res.body.data.forEach((record) => {
-                            expect(record).to.have.property('status')
-                                .eql(messages.getStatus());
-                        });
-                        done();
+
+describe('/GET all sent messages', () => {
+    it('should fetch all sent messages', (done) => {
+        messages.setStatus('send');
+            chai.request(server)
+                .get('/messages/' + messages.getStatus())
+                .send(messages)
+                .end((error, res) => {
+                    res.body.data.forEach((record) => {
+                        expect(record).to.have.property('status')
+                            .eql(messages.getStatus());
                     });
-            }
+                    done();
+                });
 
-        });
     });
+});
 
-    describe('/GET all sent messages', () => {
-        it('should fetch all sent messages', (done) => {
-            messages.setStatus('send');
-            dataStore.save(messages.getId(), messages);
-            if (dataStore.has(messages.getId(), messages)) {
-                chai.request(server)
-                    .get('/messages/' + messages.getId())
-                    .send(messages)
-                    .end((error, res) => {
-                        res.body.data.forEach((record) => {
-                            expect(record).to.have.property('status')
-                                .eql(messages.getStatus());
-                        });
-                        done();
+describe('GET/ Messages ', () => {
+    it('should fetch all unread received emails', (done) => {
+        messages.setStatus('unread');
+            chai.request(server)
+                .get('/messages/' + messages.getStatus())
+                .send(messages)
+                .end((error, res) => {
+                    res.body.data.forEach((record) => {
+                        expect(record).to.have.property('status')
+                            .eql(messages.getStatus());
                     });
-            }
-        });
-    });
+                    done();
+                });
 
+    });
 });
 
 describe('GET/ messages/ message-id', () => {

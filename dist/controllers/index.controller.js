@@ -8,6 +8,8 @@ exports.login = login;
 exports.createEmail = createEmail;
 exports.getEmail = getEmail;
 exports.getEmails = getEmails;
+exports.getSentEmails = getSentEmails;
+exports.getUnreadEmails = getUnreadEmails;
 exports.deleteEmail = deleteEmail;
 
 var _User = require("../entity/User");
@@ -168,6 +170,39 @@ function getEmails(req, res) {
   }
 
   return sendResponse(res, 500, [], 'Internal server error');
+}
+
+function getSentEmails(req, res) {
+  var messages = messageStore.readAll();
+  var sentMessages = messages.filter(function (message) {
+    return message.data.status === 'sent';
+  });
+
+  if (!sentMessages) {
+    return sendResponse(res, 404, [], 'Messages not found');
+  } else if (sentMessages.length < 1) {
+    return sendResponse(res, 204, [], 'No content');
+  } else if (sentMessages.length > 0) {
+    return sendResponse(res, 200, sentMessages, '');
+  } else {
+    return sendResponse(res, 505, [], 'Internal server error');
+  }
+}
+
+function getUnreadEmails(req, res) {
+  var unreadMessages = messageStore.filter(function (messages) {
+    return messages.data.status === 'unread';
+  });
+
+  if (!unreadMessages) {
+    return sendResponse(res, 404, [], 'messages not found');
+  } else if (unreadMessages.length < 1) {
+    return sendResponse(res, 204, [], 'No messages');
+  } else if (unreadMessages.length > 0) {
+    return sendResponse(res, 200, unreadMessages, '');
+  } else {
+    return sendResponse(res, 505, [], 'Internal server error');
+  }
 }
 
 function deleteEmail(req, res) {
