@@ -36,7 +36,7 @@ function () {
   }, {
     key: "getMemberId",
     value: function getMemberId() {
-      return memberId;
+      return this.memberId;
     }
   }]);
 

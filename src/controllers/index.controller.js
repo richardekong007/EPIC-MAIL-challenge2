@@ -127,6 +127,37 @@ export function getEmails(req, res) {
     return sendResponse(res, 500, [], 'Internal server error');
 }
 
+export function getSentEmails(req, res){
+    let messages = messageStore.readAll();
+    const sentMessages = messages.filter(message =>
+        message.data.status === 'sent');
+    if (!sentMessages){
+        return sendResponse(res, 404, [],'Messages not found');
+    }else if (sentMessages.length < 1){
+        return sendResponse(res, 204, [], 'No content');
+    }else if (sentMessages.length > 0){
+        return sendResponse(res, 200, sentMessages, '');
+    }else{
+        return sendResponse(res, 505, [], 'Internal server error');
+    }
+
+}
+
+export function getUnreadEmails(req, res){
+
+    let unreadMessages = messageStore
+        .filter(messages => messages.data.status === 'unread');
+    if(!unreadMessages){
+        return sendResponse(res, 404, [],'messages not found');
+    }else if (unreadMessages.length < 1){
+        return sendResponse(res, 204, [], 'No messages')
+    }else if (unreadMessages.length > 0){
+        return sendResponse(res, 200, unreadMessages, '')
+    }else{
+        return sendResponse(res, 505, [], 'Internal server error');
+    }
+}
+
 export function deleteEmail(req, res) {
     let status = 500;
     let deletedEmail;

@@ -13,7 +13,7 @@ export class GroupMembers {
     }
 
     getMemberId (){
-        return memberId;
+        return this.memberId;
     }
 
 }
