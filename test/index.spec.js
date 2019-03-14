@@ -139,8 +139,6 @@ describe('Get/ Messages', () => {
 describe('/GET all sent messages', () => {
     it('should fetch all sent messages', (done) => {
         messages.setStatus('send');
-        dataStore.save(messages.getId(), messages);
-        if (dataStore.has(messages.getId(), messages)) {
             chai.request(server)
                 .get('/messages/' + messages.getStatus())
                 .send(messages)
@@ -151,15 +149,13 @@ describe('/GET all sent messages', () => {
                     });
                     done();
                 });
-        }
+
     });
 });
 
 describe('GET/ Messages ', () => {
     it('should fetch all unread received emails', (done) => {
         messages.setStatus('unread');
-        dataStore.save(messages.getId(), messages);
-        if (dataStore.has(messages.getId(), messages)) {
             chai.request(server)
                 .get('/messages/' + messages.getStatus())
                 .send(messages)
@@ -170,7 +166,6 @@ describe('GET/ Messages ', () => {
                     });
                     done();
                 });
-        }
 
     });
 });
