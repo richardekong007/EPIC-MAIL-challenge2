@@ -3,14 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.signup = signup;
-exports.login = login;
-exports.createEmail = createEmail;
-exports.getEmail = getEmail;
-exports.getEmails = getEmails;
-exports.getSentEmails = getSentEmails;
-exports.getUnreadEmails = getUnreadEmails;
-exports.deleteEmail = deleteEmail;
+exports.deleteEmail = exports.getUnreadEmails = exports.getSentEmails = exports.getEmails = exports.getEmail = exports.createEmail = exports.login = exports.signup = void 0;
 
 var _User = require("../entity/User");
 
@@ -32,58 +25,17 @@ var userDataStore = _UserStore.UserStore.getInstance();
 
 var messageStore = _MessageStore.MessageStore.getInstance();
 
-var mockedMessages = [{
-  "data": {
-    "id": 10,
-    "email": "ekong.richard@yahoo.com",
-    "subject": "BAD LIFE",
-    "message": "What a life",
-    "parentMessageId": 0,
-    "status": "sent"
-  }
-}, {
-  "data": {
-    "id": 20,
-    "email": "ekong.richard@yahoo.com",
-    "subject": "BAD LIFE",
-    "message": "What a life",
-    "parentMessageId": 0,
-    "status": "sent"
-  }
-}, {
-  "data": {
-    "id": 30,
-    "email": "ekong.richard@yahoo.com",
-    "subject": "BAD LIFE",
-    "message": "What a life",
-    "parentMessageId": 0,
-    "status": "sent"
-  }
-}, {
-  "data": {
-    "id": 40,
-    "email": "ekong.richard@yahoo.com",
-    "subject": "BAD LIFE",
-    "message": "What a life",
-    "parentMessageId": 0,
-    "status": "sent"
-  }
-}, {
-  "data": {
-    "id": 50,
-    "email": "ekong.richard@yahoo.com",
-    "subject": "BAD LIFE",
-    "message": "What a life",
-    "parentMessageId": 0,
-    "status": "unread"
-  }
-}];
-
-function signup(req, res) {
+var signup = function signup(req, res) {
   // validate request
   if (!req.body) {
     return res.status(505).send({
       message: 'Internal server error, could not create user'
+    });
+  }
+
+  if (!req.body.id || !req.body.email || !req.body.firstName || !req.body.lastName) {
+    return res.status(401).send({
+      message: 'Invalid Request'
     });
   } //perform password encryption
 
@@ -116,9 +68,11 @@ function signup(req, res) {
       }
     }
   });
-}
+};
 
-function login(req, res) {
+exports.signup = signup;
+
+var login = function login(req, res) {
   //validate request
   var status;
 
@@ -164,9 +118,11 @@ function login(req, res) {
       });
     }
   });
-}
+};
 
-function createEmail(req, res) {
+exports.login = login;
+
+var createEmail = function createEmail(req, res) {
   var status; //valid req body
 
   if (!req.body) {
@@ -186,9 +142,11 @@ function createEmail(req, res) {
     messageStore.save(message.getId(), message);
     sendResponse(res, 201, messageStore.readAll(), 'Message delivered!');
   }
-}
+};
 
-function getEmail(req, res) {
+exports.createEmail = createEmail;
+
+var getEmail = function getEmail(req, res) {
   var status = 500;
   var email = messageStore.read(parseInt(req.params.id));
 
@@ -203,9 +161,11 @@ function getEmail(req, res) {
   }
 
   return sendResponse(res, status, [], 'Internal server error');
-}
+};
 
-function getEmails(req, res) {
+exports.getEmail = getEmail;
+
+var getEmails = function getEmails(req, res) {
   var messages = messageStore.readAll();
 
   if (messages.length > 0) {
@@ -217,12 +177,14 @@ function getEmails(req, res) {
   }
 
   return sendResponse(res, 500, [], 'Internal server error');
-}
+};
 
-function getSentEmails(req, res) {
+exports.getEmails = getEmails;
+
+var getSentEmails = function getSentEmails(req, res) {
   var messages = messageStore.readAll();
-  var sentMessages = mockedMessages.filter(function (message) {
-    return message.data.status === 'sent';
+  var sentMessages = messages.data.filter(function (message) {
+    return message.status === 'sent';
   });
 
   if (!sentMessages) {
@@ -234,11 +196,14 @@ function getSentEmails(req, res) {
   } else {
     return sendResponse(res, 505, [], 'Internal server error');
   }
-}
+};
 
-function getUnreadEmails(req, res) {
-  var unreadMessages = mockedMessages.filter(function (messages) {
-    return messages.data.status === 'unread';
+exports.getSentEmails = getSentEmails;
+
+var getUnreadEmails = function getUnreadEmails(req, res) {
+  var messages = messageStore.readAll();
+  var unreadMessages = messages.data.filter(function (messages) {
+    return messages.status === 'unread';
   });
 
   if (!unreadMessages) {
@@ -250,9 +215,11 @@ function getUnreadEmails(req, res) {
   } else {
     return sendResponse(res, 505, [], 'Internal server error');
   }
-}
+};
 
-function deleteEmail(req, res) {
+exports.getUnreadEmails = getUnreadEmails;
+
+var deleteEmail = function deleteEmail(req, res) {
   var status = 500;
   var deletedEmail;
   deletedEmail = messageStore.deleteItem(parseInt(req.params.id));
@@ -271,13 +238,15 @@ function deleteEmail(req, res) {
   } else {
     return sendResponse(res, status, [], 'Internal Server Error');
   }
-}
+};
 
-function createUser(req, hash) {
+exports.deleteEmail = deleteEmail;
+
+var createUser = function createUser(req, hash) {
   return new _User.User(req.body.id, req.body.email, req.body.firstName, req.body.lastName, hash);
-}
+};
 
-function createMessage(req, msgStatus) {
+var createMessage = function createMessage(req, msgStatus) {
   req.body.createdOn = new Date();
   req.body.status = msgStatus;
   var message = new _Messages.Messages();
@@ -288,21 +257,21 @@ function createMessage(req, msgStatus) {
   message.setParentMessageId(req.body.parentMessageId);
   message.setStatus(req.body.status);
   return message;
-}
+};
 
-function sendResponse(res, status, data, message) {
+var sendResponse = function sendResponse(res, status, data, message) {
   return res.status(status).send({
     'status': status,
     'message': message,
     'data': data
   });
-}
+};
 
-function acquireToken(req) {
+var acquireToken = function acquireToken(req) {
   return _jsonwebtoken.default.sign({
     id: req.body.id,
     email: req.body.email
   }, _config.default.secret, {
     expiresIn: _config.default.expiresIn
   });
-}
+};

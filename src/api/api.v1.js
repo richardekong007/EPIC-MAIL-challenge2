@@ -1,8 +1,8 @@
 import express from 'express';
+import {authorize} from '../middleware/auth';
 
 const appV1 = express.Router();
 const controller = require('../controllers/index.controller');
-const authorize = require('../middleware/auth');
 
 appV1.post('/auth/signup', controller.signup);
 
