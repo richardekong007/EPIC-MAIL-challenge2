@@ -14,6 +14,8 @@ appV1.get('/messages/:id',authorize, controller.getEmail);
 
 appV1.get('/messages', authorize, controller.getEmails);
 
+appV1.get('/messages/:sent', authorize, controller.getSentEmails);
+
 appV1.delete('/messages/:id', authorize, controller.deleteEmail);
 
 export default appV1;
