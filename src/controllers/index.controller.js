@@ -10,8 +10,7 @@ import {MessageStore} from "../storage/MessageStore";
 const userDataStore = UserStore.getInstance();
 const messageStore = MessageStore.getInstance();
 
-
-export function signup(req, res) {
+const signup = (req, res) => {
     // validate request
     if (!req.body) {
         return res.status(505).send({
@@ -48,9 +47,9 @@ export function signup(req, res) {
             }
         }
     });
-}
+};
 
-export function login(req, res) {
+const login = (req, res) => {
     //validate request
     let status;
     if (!req.body) {
@@ -77,9 +76,9 @@ export function login(req, res) {
             });
         }
     });
-}
+};
 
-export function createEmail(req, res) {
+const createEmail = (req, res) => {
     let status;
     //valid req body
     if (!req.body) {
@@ -95,10 +94,10 @@ export function createEmail(req, res) {
         sendResponse(res, 201, messageStore.readAll(), 'Message delivered!');
     }
 
-}
+};
 
 
-export function getEmail(req, res) {
+const getEmail = (req, res) => {
 
     let status = 500;
     let email = messageStore.read(parseInt(req.params.id));
@@ -113,9 +112,9 @@ export function getEmail(req, res) {
 
     return sendResponse(res, status, [], 'Internal server error');
 
-}
+};
 
-export function getEmails(req, res) {
+const getEmails = (req, res) => {
 
     let messages = messageStore.readAll();
     if (messages.length > 0) {
@@ -125,40 +124,40 @@ export function getEmails(req, res) {
         return sendResponse(res, 204, [], 'No content');
     }
     return sendResponse(res, 500, [], 'Internal server error');
-}
+};
 
-export function getSentEmails(req, res){
+const getSentEmails = (req, res) => {
     let messages = messageStore.readAll();
     const sentMessages = messages.filter(message =>
         message.data.status === 'sent');
-    if (!sentMessages){
-        return sendResponse(res, 404, [],'Messages not found');
-    }else if (sentMessages.length < 1){
+    if (!sentMessages) {
+        return sendResponse(res, 404, [], 'Messages not found');
+    } else if (sentMessages.length < 1) {
         return sendResponse(res, 204, [], 'No content');
-    }else if (sentMessages.length > 0){
+    } else if (sentMessages.length > 0) {
         return sendResponse(res, 200, sentMessages, '');
-    }else{
+    } else {
         return sendResponse(res, 505, [], 'Internal server error');
     }
 
-}
+};
 
-export function getUnreadEmails(req, res){
+const getUnreadEmails = (req, res) => {
 
     let unreadMessages = messageStore
         .filter(messages => messages.data.status === 'unread');
-    if(!unreadMessages){
-        return sendResponse(res, 404, [],'messages not found');
-    }else if (unreadMessages.length < 1){
+    if (!unreadMessages) {
+        return sendResponse(res, 404, [], 'messages not found');
+    } else if (unreadMessages.length < 1) {
         return sendResponse(res, 204, [], 'No messages')
-    }else if (unreadMessages.length > 0){
+    } else if (unreadMessages.length > 0) {
         return sendResponse(res, 200, unreadMessages, '')
-    }else{
+    } else {
         return sendResponse(res, 505, [], 'Internal server error');
     }
-}
+};
 
-export function deleteEmail(req, res) {
+const deleteEmail = (req, res) => {
     let status = 500;
     let deletedEmail;
     deletedEmail = messageStore.deleteItem(parseInt(req.params.id));
@@ -177,10 +176,10 @@ export function deleteEmail(req, res) {
         return sendResponse(res, status, [], 'Internal Server Error');
     }
 
-}
+};
 
 
-function createUser(req, hash) {
+const createUser = (req, hash) => {
     return new User(
         req.body.id,
         req.body.email,
@@ -188,9 +187,9 @@ function createUser(req, hash) {
         req.body.lastName,
         hash
     );
-}
+};
 
-function createMessage(req, msgStatus) {
+const createMessage = (req, msgStatus) => {
 
     req.body.createdOn = new Date();
     req.body.status = msgStatus;
@@ -202,18 +201,18 @@ function createMessage(req, msgStatus) {
     message.setParentMessageId(req.body.parentMessageId);
     message.setStatus(req.body.status);
     return message
-}
+};
 
-function sendResponse(res, status, data, message) {
+const sendResponse = (res, status, data, message) => {
     return res.status(status)
         .send({
             'status': status,
             'message': message,
             'data': data
         });
-}
+};
 
-function acquireToken(req) {
+const acquireToken = (req) => {
     return jwt.sign(
         {
             id: req.body.id,
@@ -224,5 +223,18 @@ function acquireToken(req) {
             expiresIn: config.expiresIn
         }
     );
-}
+
+
+};
+
+export {
+    signup,
+    login,
+    createEmail,
+    getEmail,
+    getEmails,
+    getSentEmails,
+    getUnreadEmails,
+    deleteEmail
+};
 
