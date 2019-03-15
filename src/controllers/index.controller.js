@@ -18,6 +18,15 @@ const signup = (req, res) => {
         });
     }
 
+    if (!(req.body.id)
+        || !(req.body.email)
+        || !(req.body.firstName)
+        || !(req.body.lastName)) {
+        return res.status(400).send({
+            message: 'Invalid Request'
+        });
+    }
+
     //perform password encryption
     bcrypt.hash(req.body.password, 10, (error, hash) => {
         if (error) {
@@ -57,6 +66,15 @@ const login = (req, res) => {
         status = 500;
         return res.status(status).send({status: status, data: [], message: 'Internal server error'});
     }
+
+    if (!(req.body.id)
+        || !(req.body.email)
+        || !(req.body.firstName)
+        || !(req.body.lastName)) {
+        return res.status(400).send({
+            message: 'Invalid Request'
+        });
+    }
     let user = userDataStore.read(req.body.id);
     if (!user) {
         status = 404;
@@ -86,6 +104,7 @@ const createEmail = (req, res) => {
         status = 500;
         return res.status(status).send({status: status, data: [], message: 'Internal server error'});
     }
+
     let message = createMessage(req, 'sent');
     if (messageStore.has(message.getId(), message)) {
         sendResponse(res, 409, messageStore.readAll(),

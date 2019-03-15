@@ -34,7 +34,7 @@ var signup = function signup(req, res) {
   }
 
   if (!req.body.id || !req.body.email || !req.body.firstName || !req.body.lastName) {
-    return res.status(401).send({
+    return res.status(400).send({
       message: 'Invalid Request'
     });
   } //perform password encryption
@@ -85,6 +85,12 @@ var login = function login(req, res) {
     });
   }
 
+  if (!req.body.id || !req.body.email || !req.body.firstName || !req.body.lastName) {
+    return res.status(400).send({
+      message: 'Invalid Request'
+    });
+  }
+
   var user = userDataStore.read(req.body.id);
 
   if (!user) {
@@ -131,6 +137,12 @@ var createEmail = function createEmail(req, res) {
       status: status,
       data: [],
       message: 'Internal server error'
+    });
+  }
+
+  if (!req.body.id || !req.body.subject || !req.createdOn || !req.body.message || !req.body.receiverId || !req.parentMessageId) {
+    return res.status(400).send({
+      message: 'Invalid Request'
     });
   }
 
